@@ -1,0 +1,1702 @@
+/* ==========================================================================
+   Felix Remmen — Portfolio
+   Brutal Minimalism: tiefes Schwarz, solide eckige Flächen mit harten
+   Rändern, fette Display-Typo, Neon-Gelb als Block-Akzent. Kein Blur,
+   keine Glows, keine Verläufe — Flächen, Linien, Kontrast.
+   Signature: Timecode-Ruler in schwebender schwarzer Leiste.
+   ========================================================================== */
+
+/* ---------- Fonts (selbst gehostet, DSGVO-konform) ---------- */
+
+/* Display: Archivo statt Space Grotesk (07.07.2026, Felix' Wunsch —
+   die spitz zulaufenden Versal-M/N von Space Grotesk gefielen nicht;
+   Archivo hat klassische, gerade Scheitel und passt zum Brutal-Look). */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-700.woff2") format("woff2");
+}
+/* 900 nur für die Hero-Wortmarke (REMMEN.) — der Brutal-Punch */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-900.woff2") format("woff2");
+}
+/* Variable (wght 100–900), NUR für die Hero-Wortmarke: der Buchstaben-
+   Hover (Gewichts-Tausch unterm Cursor) interpoliert font-weight
+   stufenlos. Fällt sie aus, greift die statische Kette (500/900). */
+@font-face {
+  font-family: "Archivo Variable";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../assets/fonts/archivo-variable.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/instrument-sans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/instrument-sans-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/instrument-sans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/space-mono-400.woff2") format("woff2");
+}
+
+/* ---------- Tokens ---------- */
+
+:root {
+  --schwarz: #050506;                        /* tiefes Schwarz */
+  --leinwand: #f2f2ee;                       /* Text */
+  --nebel: #9c9c97;                          /* Sekundärtext */
+
+  /* Brutal-Flächen: solide, keine Transparenz-Spielereien. Panels heben
+     sich über Fläche + harte 1px-Ränder ab, Hover flippt den Rand auf
+     hartes Weiß (keine weichen Glows). */
+  --flaeche: #0d0d0f;                        /* Panel-Fläche */
+  --flaeche-hell: #17171a;                   /* Panel-Fläche, angehoben */
+  --rand: #2b2b30;                           /* Standard-Rand, hart */
+  --rand-hell: #f2f2ee;                      /* Hover-/Fokus-Rand */
+
+  --neon: #ffff2c;                           /* Akzent */
+  --neon-soft: rgba(255, 255, 44, 0.08);
+  --tally: #ff4d42;                          /* REC-Punkt, mikrodosiert */
+
+  /* Brutal Minimalism (Felix' Wunsch 07.07.2026, nach Referenzbild):
+     ALLES eckig — Fenster, Buttons, Tags, Badges. Nur echte Kreise
+     (REC-Punkt) bleiben Kreise. */
+  --radius: 0px;
+  --radius-s: 0px;
+  --radius-pill: 0px;
+
+  --font-display: "Archivo", "Helvetica Neue", sans-serif;
+  --font-body: "Instrument Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SF Mono", monospace;
+
+  --header-top: 14px;
+  --header-h: 54px;
+  --ruler-h: 18px;
+  --inhalt-breite: 1180px;
+  /* ACHTUNG: heißt bewusst NICHT --rand — das ist die Randfarbe (oben).
+     Eine frühere Doppelbelegung hatte sämtliche 1px-Ränder der Seite
+     ungültig gemacht (Länge in border-Shorthand → Deklaration verworfen). */
+  --seitenrand: clamp(1.25rem, 5vw, 3rem);
+
+}
+
+/* ---------- Reset & Basis ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 22px);
+}
+
+body {
+  background: var(--schwarz);
+  color: var(--leinwand);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Kein Hintergrund-Dekor: Brutal Minimalism lebt vom flachen, tiefen
+   Schwarz — die früheren Licht-Blobs (Glas-Ära) sind bewusst entfernt. */
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--neon);
+  color: var(--schwarz);
+}
+
+:focus-visible {
+  outline: 2px solid var(--neon);
+  outline-offset: 3px;
+}
+
+.container {
+  max-width: var(--inhalt-breite);
+  margin-inline: auto;
+  padding-inline: var(--seitenrand);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Eyebrow als harter Neon-Block: schwarzer Mono-Text auf gelber Fläche */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--schwarz);
+  background: var(--neon);
+  padding: 0.4rem 0.75rem 0.35rem;
+  display: inline-block;
+  margin-bottom: 1.3rem;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+}
+
+/* ---------- Header: schwebende schwarze Leiste + Timecode-Ruler ---------- */
+
+.site-header {
+  position: fixed;
+  top: var(--header-top);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(var(--inhalt-breite), calc(100% - 24px));
+  border-radius: var(--radius);
+  background: #0a0a0c;
+  border: 1px solid var(--rand);
+  overflow: hidden;
+}
+
+.header-bar {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-inline: 1.4rem;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.wordmark em {
+  font-style: normal;
+  color: var(--neon);
+}
+
+.hauptnav {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.hauptnav a {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nebel);
+  transition: color 0.25s ease;
+}
+
+.hauptnav a:hover,
+.hauptnav a.aktiv {
+  color: var(--leinwand);
+}
+
+.hauptnav a.aktiv {
+  color: var(--neon);
+}
+
+.timecode {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--neon);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Der Ruler: Tick-Leiste wie im Schnittprogramm, Playhead = Scroll-Position */
+.ruler {
+  position: relative;
+  height: var(--ruler-h);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background:
+    repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.14) 0 1px,
+      transparent 1px 12.5%
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.05) 0 1px,
+      transparent 1px 2.5%
+    );
+  background-size: 100% 50%, 100% 28%;
+  background-position: bottom left, bottom left;
+  background-repeat: no-repeat;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--neon);
+  will-change: transform;
+}
+
+/* Playhead-Marker als hartes Quadrat statt Glow-Dot */
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: -2.5px;
+  width: 7px;
+  height: 7px;
+  background: var(--neon);
+}
+
+/* Mobile-Menü */
+.menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 2px;
+}
+
+.menu-btn span {
+  width: 24px;
+  height: 2px;
+  background: var(--leinwand);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.menu-offen .menu-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-offen .menu-btn span:nth-child(2) { opacity: 0; }
+.menu-offen .menu-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobilnav {
+  display: none;
+}
+
+/* ---------- Hero: Dither-Porträt + Riesen-Wortmarke ----------
+   Nach Referenz (07.07.2026, Felix' Wunsch): das Porträt füllt als grobes
+   Pixel-Raster die rechte Bildschirmhälfte, die Wortmarke läuft unten
+   links hinein. js/main.js rastert das Foto per Bayer-Dithering auf das
+   <canvas>; in Mausnähe flackern die Rasterpunkte wie Sensorrauschen. */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Canvas rendert in CSS-Pixel-Auflösung; pixelated hält die Raster-
+   quadrate auch auf Retina-Displays hart statt sie weichzuzeichnen. */
+.hero-dither {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* height MUSS explizit gesetzt sein: canvas ist ein replaced element,
+     top+bottom:0 strecken es nicht — es bliebe bei der Attribut-Höhe
+     (Rückkopplung: JS setzt die Attribute aus der CSS-Box). */
+  height: 100%;
+  width: clamp(320px, 64vw, 1180px);
+  image-rendering: pixelated;
+  /* linke Kante löst sich im Seiten-Schwarz auf statt hart zu enden */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 16%);
+  mask-image: linear-gradient(to right, transparent, #000 16%);
+}
+
+.hero-buehne {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--inhalt-breite);
+  margin-inline: auto;
+  padding: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 2.4rem) var(--seitenrand) 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.hero-skills {
+  margin-top: 1rem;
+  color: var(--nebel);
+  letter-spacing: 0.16em;
+}
+
+.hero-name {
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  line-height: 0.84;
+  font-family: "Archivo Variable", var(--font-display);
+  white-space: nowrap;
+}
+
+/* Buchstaben-Hover der Wortmarke: main.js zerlegt beide Zeilen in Spans
+   und schreibt distanzabhängige font-weight-Werte — Vorname wird unterm
+   Cursor fett (500→900), Nachname dünn (900→500). Die Transition lässt
+   die Welle beim Drüberfahren nachschwingen. */
+.hero-buchstabe {
+  transition: font-weight 0.15s linear;
+}
+
+.hero-vorname {
+  font-weight: 500;
+  font-size: clamp(2.7rem, 8vw, 7.6rem);
+  letter-spacing: -0.02em;
+  color: var(--leinwand);
+}
+
+.hero-nachname {
+  font-weight: 900;
+  font-size: clamp(3.7rem, 13vw, 12.4rem);
+  letter-spacing: -0.03em;
+  color: var(--neon);
+  margin-left: -0.045em; /* optischer Ausgleich der fetten Versal-Kante */
+}
+
+.hero-fakten {
+  margin-top: clamp(1.6rem, 3.5vw, 2.6rem);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.9rem 2.2rem;
+  color: var(--nebel);
+}
+
+.hero-fakten > span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.fakt-quadrat {
+  width: 7px;
+  height: 7px;
+  background: var(--neon);
+  margin-right: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* Nominierungs-Marke an der rechten Viewport-Kante (nach Referenz:
+   kleines helles Badge klebt hochkant an der Kante) */
+.hero-award {
+  position: absolute;
+  right: 0;
+  top: 52%;
+  z-index: 3;
+  writing-mode: vertical-rl;
+  background: var(--leinwand);
+  color: var(--schwarz);
+  padding: 1.1rem 0.5rem;
+  letter-spacing: 0.12em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.6rem;
+  border-radius: var(--radius-pill);
+  transition: background 0.15s linear, color 0.15s linear, border-color 0.15s linear, box-shadow 0.15s linear, transform 0.15s linear;
+}
+
+/* Voller Neon-Button: flache gelbe Fläche. Hover rückt den Block hart
+   nach oben links und legt einen versetzten weißen Block-Schatten
+   darunter — der Neo-Brutal-Move statt weicher Glows. */
+.btn-voll {
+  background: var(--neon);
+  color: var(--schwarz);
+}
+
+.btn-voll:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 3px 3px 0 var(--leinwand);
+}
+
+.btn-linie {
+  border: 2px solid var(--leinwand);
+  background: transparent;
+  color: var(--leinwand);
+}
+
+.btn-linie:hover {
+  background: var(--neon);
+  border-color: var(--neon);
+  color: var(--schwarz);
+}
+
+.rec-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tally);
+  margin-right: 0.55rem;
+  animation: rec-blink 1.6s steps(2, start) infinite;
+}
+
+@keyframes rec-blink {
+  to { opacity: 0.15; }
+}
+
+.scroll-cue {
+  color: var(--nebel);
+  margin-left: auto;
+}
+
+/* ---------- Sektionen allgemein ---------- */
+
+.sektion {
+  padding-block: clamp(5rem, 11vw, 8.5rem);
+}
+
+.sektion-kopf {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.sektion-titel {
+  font-size: clamp(2.4rem, 5.6vw, 4.4rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+/* Scroll-Reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Projekte ---------- */
+
+/* Filter bleiben beim Scrollen durch den Stapel als Glas-Kapsel sichtbar */
+.filter-sticky {
+  position: sticky;
+  top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 12px);
+  z-index: 30;
+  display: flex;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.filter-leiste {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  padding: 0.45rem;
+  border-radius: var(--radius);
+  background: #0a0a0c;
+  border: 1px solid var(--rand);
+}
+
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nebel);
+  padding: 0.55rem 1.05rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--rand);
+  background: transparent;
+  transition: color 0.15s linear, border-color 0.15s linear, background 0.15s linear;
+}
+
+.filter-btn:hover {
+  color: var(--leinwand);
+  border-color: var(--rand-hell);
+}
+
+.filter-btn[aria-pressed="true"] {
+  background: var(--neon);
+  border-color: var(--neon);
+  color: var(--schwarz);
+}
+
+/* Karten-Stapel: einspaltig, jede Karte klebt beim Scrollen unter dem Header
+   und wird von der nächsten überdeckt — der Versatz (--stapel-i, via main.js)
+   lässt oben die Glas-Kanten des Decks herausschauen. Die Breite ist an die
+   Viewport-Höhe gekoppelt, damit jede Karte komplett sichtbar bleibt. */
+.projekt-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: clamp(2.5rem, 6vh, 4rem);
+  /* Karten eine Spur größer (Felix' Wunsch 04.07.2026) — Breite bleibt an die
+     Viewporthöhe gekoppelt, damit jede Karte trotz größerem Cap komplett sichtbar bleibt */
+  max-width: min(860px, calc((100svh - 330px) * 1.7778));
+  margin-inline: auto;
+}
+
+.projekt-karte {
+  position: sticky;
+  top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 76px + var(--stapel-i, 0) * 16px);
+}
+
+.projekt-karte.versteckt {
+  display: none;
+}
+
+/* 3D-Deck: Jede Karte sitzt auf einer eigenen „Bühne". Je tiefer sie im
+   Stapel steckt (--tiefe, pro Frame von main.js/stapel3dAktualisieren aus der
+   Überdeckung berechnet), desto weiter rückt und kippt sie nach hinten — die
+   heraus­schauenden Kanten staffeln sich so perspektivisch in die Tiefe.
+   Die perspective() steckt in der Bühnen-Transform selbst (nicht als
+   Eigenschaft der sticky Karte), damit der Fluchtpunkt pro Karte stabil bleibt
+   und das Messen der (untransformierten) .projekt-karte nicht rückkoppelt.
+   --tiefe = 0 → flach (auch ganz ohne JS und bei reduzierter Bewegung). */
+.karte-buehne {
+  transform:
+    perspective(1300px)
+    translateZ(calc(var(--tiefe, 0) * -60px))
+    rotateX(calc(var(--tiefe, 0) * 3deg));
+  transform-origin: 50% 0%;
+  /* Keine transition: --tiefe wird pro Frame (rAF) am Scroll gesetzt — direkte
+     Kopplung ohne Nachlauf; Filter/Resize dürfen dabei hart umspringen. */
+  will-change: transform;
+}
+
+.karte-trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 10px 0;
+  border-radius: var(--radius);
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  overflow: hidden;
+  transition: border-color 0.15s linear, background 0.15s linear;
+}
+
+.karte-trigger:active {
+  transform: translate(2px, 2px);
+}
+
+/* Rahmen-Glow (weicher Cursor-Verlauf am Kartenrand) ist mit dem Wechsel
+   zu Brutal Minimalism bewusst deaktiviert — main.js setzt --gx/--gy
+   weiterhin, das Span bleibt schlicht unsichtbar. */
+.karte-glow {
+  display: none;
+}
+
+.karte-trigger:hover,
+.karte-trigger:focus-visible {
+  border-color: var(--rand-hell);
+  background: var(--flaeche-hell);
+}
+
+.karte-trigger:hover .karte-info h3,
+.karte-trigger:focus-visible .karte-info h3 {
+  color: var(--neon);
+}
+
+.karte-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  background: #0a0a0c;
+}
+
+/* Tiefen-Schleier: zurückgesteckte Karten dunkeln ab (liegt über dem Bild,
+   aber unter Award/Play-Badge), verstärkt den 3D-Eindruck. */
+.karte-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: #000;
+  opacity: calc(var(--tiefe, 0) * 0.17);
+}
+
+.karte-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.karte-play {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--schwarz);
+  background: var(--neon);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-pill);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.15s linear, transform 0.15s linear;
+}
+
+.karte-trigger:hover .karte-play,
+.karte-trigger:focus-visible .karte-play {
+  opacity: 1;
+  transform: none;
+}
+
+.karte-award {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--neon);
+  background: var(--schwarz);
+  border: 1px solid var(--neon);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-pill);
+}
+
+.karte-info {
+  position: relative;
+  z-index: 3; /* Titelzeile bleibt über dem Glow scharf */
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0.5rem 1rem;
+}
+
+.karte-info h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+
+.karte-info .meta {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nebel);
+  white-space: nowrap;
+}
+
+.grid-leer {
+  grid-column: 1 / -1;
+  color: var(--nebel);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+/* ---------- Lightbox ---------- */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: rgba(4, 4, 5, 0.88);
+  overflow-y: auto;
+  padding: clamp(1rem, 4vw, 3rem) var(--seitenrand);
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox-inner {
+  width: min(920px, 100%);
+  margin-block: auto;
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  border-radius: var(--radius);
+  padding: clamp(0.9rem, 2.5vw, 1.8rem);
+  animation: lb-rein 0.2s ease-out;
+}
+
+@keyframes lb-rein {
+  from { opacity: 0; transform: translateY(18px); }
+}
+
+.lightbox-schliessen {
+  position: sticky;
+  top: 6px;
+  z-index: 5;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--leinwand);
+  padding: 0.55rem 1rem;
+  margin-bottom: 0.8rem;
+  border-radius: var(--radius-pill);
+  background: #0a0a0c;
+  border: 1px solid var(--rand);
+  transition: color 0.15s linear, border-color 0.15s linear;
+}
+
+.lightbox-schliessen:hover {
+  color: var(--neon);
+  border-color: var(--rand-hell);
+}
+
+.lightbox-schliessen .x {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #0a0a0c;
+  border: 1px solid var(--rand);
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  margin-bottom: 1.8rem;
+}
+
+/* Normaler Zeiger über Thumbnail/Consent/iframe — das Fokus-Reticle blendet
+   sich hier aus (siehe .reticle.ist-versteckt), gewinnt per ID-Spezifität
+   automatisch gegen html.reticle-aktiv, kein !important nötig. */
+#lightbox-player:hover {
+  cursor: auto;
+}
+
+.player iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.player-consent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(5, 5, 6, 0.82);
+}
+
+.player-consent .hinweis {
+  max-width: 30rem;
+  color: var(--nebel);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.player-consent .hinweis a {
+  color: var(--neon);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.player-folgt p {
+  max-width: 26rem;
+  font-size: 0.85rem;
+  text-align: center;
+  padding-inline: 1.5rem;
+}
+
+.player-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-folgt {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: rgba(5, 5, 6, 0.82);
+  color: var(--nebel);
+}
+
+.lightbox-titelzeile {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+
+.lightbox-titel {
+  font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+}
+
+.lightbox-award {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--neon);
+  border: 1px solid var(--neon);
+  background: var(--neon-soft);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 1.2rem;
+  display: inline-block;
+}
+
+.lightbox-meta {
+  display: flex;
+  gap: 0.4rem 1.4rem;
+  flex-wrap: wrap;
+  color: var(--nebel);
+  margin-bottom: 1.4rem;
+}
+
+.lightbox-besch {
+  max-width: 44rem;
+  color: var(--leinwand);
+  margin-bottom: 2rem;
+}
+
+.lightbox-credits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.4rem 2.5rem;
+  border-top: 1px solid var(--rand);
+  padding-top: 1.6rem;
+  padding-bottom: 1rem;
+}
+
+.lightbox-credits dt {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 0.4rem;
+}
+
+.lightbox-credits dd {
+  color: var(--nebel);
+  font-size: 0.95rem;
+}
+
+/* ---------- Leistungen ---------- */
+
+.leistung-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+}
+
+.leistung-reihe {
+  padding: 1.9rem 1.8rem 2.1rem;
+  border-radius: var(--radius);
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  transition: border-color 0.15s linear, background 0.15s linear;
+}
+
+.leistung-reihe:hover {
+  border-color: var(--rand-hell);
+  background: var(--flaeche-hell);
+}
+
+.leistung-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.6rem;
+  transition: color 0.15s linear;
+}
+
+.leistung-reihe:hover .leistung-name {
+  color: var(--neon);
+}
+
+.leistung-text {
+  color: var(--nebel);
+  font-size: 0.98rem;
+}
+
+/* ---------- Über mich ---------- */
+
+.profil {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: start;
+}
+
+.portraet {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius);
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  overflow: hidden;
+}
+
+.portraet img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.portraet-platzhalter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--nebel);
+}
+
+.profil-text p + p {
+  margin-top: 1.1rem;
+}
+
+.profil-text p {
+  color: var(--nebel);
+}
+
+.profil-text .lead {
+  color: var(--leinwand);
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Kennzahlen als harter Neon-Block: der eine laute Akzent der Seite —
+   schwarze Riesen-Zahlen auf gelber Fläche (nach Referenz: eine Karte
+   im Raster ist voll akzentfarben). */
+.kennzahlen-karte {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.25rem, 4vw, 2rem);
+  border-radius: var(--radius);
+  background: var(--neon);
+  padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.kennzahl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.kennzahl-zahl {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--schwarz);
+}
+
+.kennzahl-label {
+  font-family: var(--font-mono);
+  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(5, 5, 6, 0.72);
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.8rem;
+  list-style: none;
+}
+
+.skills li {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--rand);
+  background: var(--flaeche);
+  color: var(--leinwand);
+  padding: 0.5rem 0.95rem;
+  border-radius: var(--radius-pill);
+}
+
+.werkzeuge {
+  margin-top: 1.6rem;
+  color: var(--nebel);
+  line-height: 2;
+}
+
+.award-box {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border: 1px solid var(--neon);
+  background: var(--neon-soft);
+  border-radius: var(--radius-s);
+  padding: 1.2rem 1.4rem;
+  margin-top: 2rem;
+}
+
+.award-box .stern {
+  color: var(--neon);
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.award-box p {
+  color: var(--leinwand);
+  font-size: 0.95rem;
+}
+
+.award-box .mono {
+  color: var(--neon);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* ---------- Arbeitsweise: Punkt läuft die Prozess-Linie entlang ----------
+   .prozess-timeline ist eine vertikale Liste mit Platz links für die Linie.
+   .prozess-linie ist die statische Spur; .prozess-fortschritt (Füllung) und
+   .prozess-punkt (der Punkt) bekommen ihre Höhe/Position live von main.js
+   (prozessAktualisieren, an dieselbe rAF-Drossel wie der Ruler gehängt).
+   Jede .prozess-schritt-Karte startet verschoben/unsichtbar und fliegt per
+   .ist-aktiv ein, sobald der Punkt sie beim Runterscrollen erreicht. */
+
+.prozess-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-left: clamp(2.2rem, 5vw, 2.8rem);
+}
+
+.prozess-linie {
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.prozess-fortschritt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: var(--neon);
+}
+
+/* Marker als hartes Quadrat — kein Glow, keine Rundung */
+.prozess-punkt {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  background: var(--neon);
+}
+
+.prozess-schritt {
+  padding: 1.5rem 1.4rem 1.7rem;
+  border-radius: var(--radius-s);
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+  opacity: 0;
+  transform: translateX(36px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.15s linear, background 0.15s linear;
+}
+
+.prozess-schritt.ist-aktiv {
+  opacity: 1;
+  transform: none;
+}
+
+.prozess-schritt:hover {
+  border-color: var(--rand-hell);
+  background: var(--flaeche-hell);
+}
+
+.prozess-schritt .nr {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--neon);
+  display: block;
+  margin-bottom: 0.9rem;
+}
+
+.prozess-schritt h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.08rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.45rem;
+}
+
+.prozess-schritt p {
+  color: var(--nebel);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+/* ---------- Kontakt ---------- */
+
+.kontakt-titel {
+  font-size: clamp(2.5rem, 7vw, 5.2rem);
+  margin-bottom: 1.4rem;
+}
+
+.kontakt-titel em {
+  font-style: normal;
+  color: var(--neon);
+}
+
+.kontakt-sub {
+  max-width: 36rem;
+  color: var(--nebel);
+  margin-bottom: 2.6rem;
+}
+
+.kontakt-aktionen {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem 1.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.verfuegbar {
+  color: var(--nebel);
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--radius-pill);
+  background: var(--flaeche);
+  border: 1px solid var(--rand);
+}
+
+.kontakt-daten {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem 2.5rem;
+  border-top: 1px solid var(--rand);
+  padding-top: 1.8rem;
+}
+
+.kontakt-daten dt {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 0.35rem;
+}
+
+.kontakt-daten dd {
+  color: var(--leinwand);
+}
+
+.kontakt-daten dd a {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.kontakt-daten dd a:hover {
+  color: var(--neon);
+  border-bottom-color: var(--neon);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-block: 2.2rem;
+}
+
+.footer-zeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+  color: var(--nebel);
+}
+
+.footer-zeile nav {
+  display: flex;
+  gap: 1.8rem;
+}
+
+.footer-zeile a {
+  color: var(--nebel);
+  transition: color 0.25s ease;
+}
+
+.footer-zeile a:hover {
+  color: var(--neon);
+}
+
+/* ---------- Rechtsseiten (Impressum / Datenschutz) ---------- */
+
+.rechtsseite {
+  padding-top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + clamp(3rem, 8vw, 5rem));
+  padding-bottom: clamp(4rem, 9vw, 7rem);
+  max-width: 800px;
+}
+
+.rechtsseite h1 {
+  font-size: clamp(2.1rem, 5.5vw, 3.2rem);
+  margin-bottom: 2.5rem;
+}
+
+.rechtsseite h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  margin: 2.4rem 0 0.7rem;
+}
+
+.rechtsseite p,
+.rechtsseite li {
+  color: var(--nebel);
+  margin-bottom: 0.7rem;
+}
+
+.rechtsseite ul {
+  padding-left: 1.2rem;
+}
+
+.rechtsseite strong {
+  color: var(--leinwand);
+  font-weight: 500;
+}
+
+.todo {
+  display: block;
+  border: 1px dashed rgba(255, 255, 44, 0.5);
+  background: var(--neon-soft);
+  color: var(--neon);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-s);
+  margin: 0.6rem 0 1rem;
+}
+
+.zurueck {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nebel);
+  margin-bottom: 2.5rem;
+  transition: color 0.25s ease;
+}
+
+.zurueck:hover {
+  color: var(--neon);
+}
+
+/* ---------- Fokus-Reticle (Cursor) ----------
+   Kamera-Autofokus-Ästhetik: vier Eck-Klammern folgen dem Zeiger und ziehen
+   sich beim Hover über klickbare Elemente enger zusammen ("Fokus verriegelt").
+   js/main.js setzt html.reticle-aktiv/.reticle.ist-aktiv ausschließlich per
+   JS (nie pur per CSS) — nur so bleibt der native Cursor auf Seiten ohne
+   main.js (impressum.html, datenschutz.html) unangetastet. */
+
+.reticle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.reticle.ist-aktiv {
+  opacity: 1;
+}
+
+.reticle.ist-versteckt {
+  opacity: 0;
+}
+
+.reticle-ecke {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border: 0 solid var(--neon);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reticle-ecke--tl {
+  border-top-width: 1.5px;
+  border-left-width: 1.5px;
+  transform: translate(-14px, -14px);
+}
+
+.reticle-ecke--tr {
+  border-top-width: 1.5px;
+  border-right-width: 1.5px;
+  transform: translate(5px, -14px);
+}
+
+.reticle-ecke--br {
+  border-bottom-width: 1.5px;
+  border-right-width: 1.5px;
+  transform: translate(5px, 5px);
+}
+
+.reticle-ecke--bl {
+  border-bottom-width: 1.5px;
+  border-left-width: 1.5px;
+  transform: translate(-14px, 5px);
+}
+
+/* Fokus-Lock: Klammern rücken beim Hover über klickbare Elemente zusammen */
+.reticle.ist-hover .reticle-ecke--tl {
+  transform: translate(-6px, -6px);
+}
+
+.reticle.ist-hover .reticle-ecke--tr {
+  transform: translate(-3px, -6px);
+}
+
+.reticle.ist-hover .reticle-ecke--br {
+  transform: translate(-3px, -3px);
+}
+
+.reticle.ist-hover .reticle-ecke--bl {
+  transform: translate(-6px, -3px);
+}
+
+/* Negativ-Modus: über gelben Flächen (Buttons, Eyebrow-Blöcke, Kennzahlen-
+   Block, aktiver Filter …) flippt das gelbe Reticle auf Schwarz, sonst wäre
+   es unsichtbar — main.js toggelt .ist-negativ im pointermove-Handler. */
+.reticle.ist-negativ .reticle-ecke {
+  border-color: var(--schwarz);
+}
+
+/* Klick-Puls: kurzer, knapperer Zug + schnellere Transition */
+.reticle.ist-klick .reticle-ecke {
+  transition-duration: 0.12s;
+}
+
+.reticle.ist-klick .reticle-ecke--tl {
+  transform: translate(-3px, -3px);
+}
+
+.reticle.ist-klick .reticle-ecke--tr {
+  transform: translate(0, -3px);
+}
+
+.reticle.ist-klick .reticle-ecke--br {
+  transform: translate(0, 0);
+}
+
+.reticle.ist-klick .reticle-ecke--bl {
+  transform: translate(-3px, 0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.reticle-aktiv {
+    cursor: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 860px) {
+  .hauptnav {
+    display: none;
+  }
+
+  .header-bar .timecode {
+    margin-left: auto;
+  }
+
+  .menu-btn {
+    display: flex;
+  }
+
+  .mobilnav {
+    display: none;
+    position: fixed;
+    top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 10px);
+    left: 12px;
+    right: 12px;
+    z-index: 55;
+    border-radius: var(--radius);
+    background: #0a0a0c;
+    border: 1px solid var(--rand);
+    padding: 1.2rem 1.6rem;
+    flex-direction: column;
+  }
+
+  .menu-offen .mobilnav {
+    display: flex;
+  }
+
+  .mobilnav a {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    color: var(--leinwand);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding-block: 0.7rem;
+  }
+
+  .mobilnav a:last-child {
+    border-bottom: 0;
+  }
+
+  .mobilnav a:hover {
+    color: var(--neon);
+  }
+
+  .menu-offen {
+    overflow: hidden;
+  }
+
+  .leistung-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Stapel auf Mobil: kleinerer Versatz, Filter als wischbare Zeile */
+  .projekt-karte {
+    top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 66px + var(--stapel-i, 0) * 8px);
+  }
+
+  /* 3D-Recede auf Mobil dezenter halten (schmalerer Viewport) */
+  .karte-buehne {
+    transform:
+      perspective(1000px)
+      translateZ(calc(var(--tiefe, 0) * -42px))
+      rotateX(calc(var(--tiefe, 0) * 2.4deg));
+  }
+
+  .filter-sticky {
+    top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 8px);
+  }
+
+  .filter-leiste {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+
+  .filter-leiste::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    flex-shrink: 0;
+  }
+
+  .profil {
+    grid-template-columns: 1fr;
+  }
+
+  .portraet {
+    max-width: 420px;
+  }
+
+  /* Hero auf Mobil: Porträt liegt vollflächig hinter dem Text — leicht
+     gedimmt, damit die Wortmarke lesbar bleibt. */
+  .hero-dither {
+    width: 100%;
+    opacity: 0.6;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .hero-award {
+    display: none;
+  }
+
+  .hero-buehne {
+    padding-top: calc(var(--header-top) + var(--header-h) + var(--ruler-h) + 2rem);
+    padding-bottom: 1.8rem;
+  }
+
+  .hero-vorname {
+    font-size: clamp(2.6rem, 11.5vw, 4.6rem);
+  }
+
+  .hero-nachname {
+    font-size: clamp(3.4rem, 18vw, 7rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .timecode {
+    display: none;
+  }
+
+  .hero-fakten .scroll-cue {
+    display: none;
+  }
+}
+
+/* ---------- Reduced Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .prozess-schritt {
+    opacity: 1;
+    transform: none;
+  }
+
+  .karte-glow {
+    display: none;
+  }
+
+  /* Defensive Redundanz zur JS-Prüfung (main.js aktiviert das Reticle bei
+     reduzierter Bewegung ohnehin nicht) — hier zusätzlich hart aus. */
+  .reticle {
+    display: none;
+  }
+
+  /* 3D-Deck aus: Karten bleiben flach gestapelt */
+  .karte-buehne {
+    transform: none;
+  }
+
+  .karte-media::after {
+    opacity: 0;
+  }
+}

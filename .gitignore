@@ -1,0 +1,39 @@
+# ---------------------------------------------------------------------------
+# Felix Remmen – Portfolio · .gitignore
+# ---------------------------------------------------------------------------
+
+# macOS / Editor-Müll
+.DS_Store
+*.swp
+Thumbs.db
+
+# Lokale Tool-Konfiguration (Claude Code, Preview-Server usw.)
+.claude/
+
+# Interne Arbeitsnotizen – kein Teil der Website
+SESSION.md
+
+# ---------------------------------------------------------------------------
+# Ungenutzte Dateien: liegen lokal im Ordner, werden von der Seite aber NICHT
+# referenziert. Sie bleiben auf deiner Platte erhalten, landen jedoch nicht im
+# Repo bzw. auf GitHub Pages. Brauchst du eine davon doch, die Zeile löschen.
+# ---------------------------------------------------------------------------
+
+# Original-Quellfotos (die eingebundenen Web-Versionen liegen daneben)
+assets/img/Felix Remmen.jpg
+assets/img/portrait.jpg
+
+# Alte Projekt-Thumbnails (Projekte nicht mehr in js/projects-data.js)
+assets/img/bkk-hochsprunggala.jpg
+assets/img/huettermann-dessert.jpg
+assets/img/nike-p6000.jpg
+assets/img/xaey-deadtown.jpg
+
+# Altes Hero-Poster + Fokusrad-Video (Hero ist jetzt das Dither-Porträt)
+assets/img/hero-poster.jpg
+assets/video/fokusrad.mp4
+
+# Ungenutzte Schriftschnitte (Space Grotesk → durch Archivo ersetzt)
+assets/fonts/space-grotesk-500.woff2
+assets/fonts/space-grotesk-600.woff2
+assets/fonts/space-grotesk-700.woff2
