@@ -991,15 +991,33 @@ button {
   gap: 1.2rem;
 }
 
+/* Äußere Reihe = Perspektiv-Bühne für den 3D-Kipp der inneren Karte.
+   reveal (opacity + translateY) bleibt hier, damit es nicht mit dem
+   Kipp-transform der Karte kollidiert. */
 .leistung-reihe {
+  perspective: 900px;
+}
+
+/* Innere Karte = sichtbare Fläche; kippt unter dem Cursor in den Raum */
+.leistung-karte {
+  height: 100%;
   padding: 1.9rem 1.8rem 2.1rem;
   border-radius: var(--radius);
   background: var(--flaeche);
   border: 1px solid var(--rand);
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: border-color 0.15s linear, background 0.15s linear,
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+/* Während des Hoverns folgt das Kippen dem Cursor sofort (kein Nachlauf);
+   die weiche transform-Transition greift nur beim Zurückfedern (pointerleave) */
+.leistung-karte.ist-neigend {
   transition: border-color 0.15s linear, background 0.15s linear;
 }
 
-.leistung-reihe:hover {
+.leistung-karte:hover {
   border-color: var(--rand-hell);
   background: var(--flaeche-hell);
 }
@@ -1013,7 +1031,7 @@ button {
   transition: color 0.15s linear;
 }
 
-.leistung-reihe:hover .leistung-name {
+.leistung-karte:hover .leistung-name {
   color: var(--neon);
 }
 

@@ -857,11 +857,44 @@
     if (window.innerWidth > 860) menuSetzen(false);
   });
 
+  /* ---------- Leistungen: 3D-Kipp der Karten ----------
+     Jede Karte kippt unter dem Cursor in den Raum — die Stelle unter der
+     Maus senkt sich nach hinten, als drückte man die Karte dort ein.
+     Reines Cursor-Tracking (Transform-Vars --rx/--ry), gefedertes
+     Zurückstellen übernimmt die CSS-Transition. Nur auf feinen Zeigern
+     und nie bei reduzierter Bewegung. */
+
+  function leistungenNeigenEinrichten() {
+    if (!feinerZeiger.matches || reduzierteBewegung.matches) return;
+    const MAX = 9; // maximaler Kippwinkel in Grad
+
+    document.querySelectorAll(".leistung-karte").forEach((karte) => {
+      karte.addEventListener("pointerenter", () => karte.classList.add("ist-neigend"));
+
+      karte.addEventListener("pointermove", (e) => {
+        const r = karte.getBoundingClientRect();
+        // Cursorposition relativ zur Kartenmitte, normiert auf -0.5..0.5
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        // Seite unter dem Cursor kippt nach hinten ("eindrücken")
+        karte.style.setProperty("--ry", (px * 2 * MAX).toFixed(2) + "deg");
+        karte.style.setProperty("--rx", (-py * 2 * MAX).toFixed(2) + "deg");
+      });
+
+      karte.addEventListener("pointerleave", () => {
+        karte.classList.remove("ist-neigend");
+        karte.style.setProperty("--rx", "0deg");
+        karte.style.setProperty("--ry", "0deg");
+      });
+    });
+  }
+
   /* ---------- Start ---------- */
 
   gridRendern();
   revealsEinrichten();
   heroDitherEinrichten();
   heroWortmarkeEinrichten();
+  leistungenNeigenEinrichten();
   rulerUpdate();
 })();
