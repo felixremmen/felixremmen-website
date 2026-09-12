@@ -666,7 +666,7 @@ button {
 
 .karte-trigger:hover,
 .karte-trigger:focus-visible {
-  border-color: var(--rand-hell);
+  border-color: var(--neon);
   background: var(--flaeche-hell);
 }
 
