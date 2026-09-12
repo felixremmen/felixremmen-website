@@ -657,16 +657,46 @@ button {
   transform: translate(2px, 2px);
 }
 
-/* Rahmen-Glow (weicher Cursor-Verlauf am Kartenrand) ist mit dem Wechsel
-   zu Brutal Minimalism bewusst deaktiviert — main.js setzt --gx/--gy
-   weiterhin, das Span bleibt schlicht unsichtbar. */
+/* Rahmen-Glow: neon-gelbes Leuchten wandert mit dem Cursor am Kartenrand
+   entlang. main.js schreibt die Cursorposition in --gx/--gy; ein radialer
+   Verlauf an dieser Stelle wird per Mask nur auf den 2px-Randring ausgestanzt
+   (border-box minus content-box via mask-composite: exclude), fern vom Cursor
+   ist der Ring transparent → nur die gehoverte Stelle leuchtet gelb. */
 .karte-glow {
   display: none;
 }
 
+@supports (mask-composite: exclude) {
+  .karte-glow {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    padding: 2px; /* Ringdicke */
+    border-radius: inherit;
+    background: radial-gradient(
+      circle 120px at var(--gx, 50%) var(--gy, 50%),
+      var(--neon),
+      transparent 70%
+    );
+    /* Nur STANDARD-Maske: in aktuellem Chrome sind -webkit-mask-* Aliase,
+       die zusammen mit den Standard-Properties die ganze Maske aushebeln. */
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.2s linear;
+    pointer-events: none;
+  }
+
+  .karte-trigger:hover .karte-glow,
+  .karte-trigger:focus-visible .karte-glow {
+    opacity: 1;
+  }
+}
+
 .karte-trigger:hover,
 .karte-trigger:focus-visible {
-  border-color: var(--neon);
+  border-color: var(--rand-hell);
   background: var(--flaeche-hell);
 }
 
