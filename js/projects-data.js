@@ -18,21 +18,6 @@ const KATEGORIEN = {
 
 const PROJEKTE = [
   {
-    id: "blossomwork",
-    titel: "Blossomwork",
-    kategorie: "imagefilm",
-    jahr: 2026,
-    ort: "Böblingen",
-    kunde: "Blossomworks",
-    rolle: "Kamera, Schnitt, Sounddesign, Animation",
-    beschreibung:
-      "Industrie-Cinematografie für Blossomworks: die Herstellung von Spezialbauteilen, erzählt über detailreiche Nahaufnahmen und dynamische Kamerabewegungen. Ziel war, technische Präzision und handwerkliche Prozesse ästhetisch erlebbar zu machen.",
-    equipment: "Blackmagic Pocket Cinema 6K",
-    software: "Adobe Premiere Pro, After Effects",
-    youtubeId: "https://youtu.be/pC5SkPwXZzk",
-    thumb: "assets/img/blossomwork.jpg",
-  },
-  {
     id: "rotten-angel-tattoo",
     titel: "Rotten Angel Tattoo",
     kategorie: "imagefilm",
@@ -46,6 +31,21 @@ const PROJEKTE = [
     software: "Adobe Premiere Pro, After Effects",
     youtubeId: "https://youtu.be/9XEMB-nS2Qg",
     thumb: "assets/img/rotten-angel-tattoo.jpg",
+  },
+  {
+    id: "blossomwork",
+    titel: "Blossomwork",
+    kategorie: "imagefilm",
+    jahr: 2026,
+    ort: "Böblingen",
+    kunde: "Blossomworks",
+    rolle: "Kamera, Schnitt, Sounddesign, Animation",
+    beschreibung:
+      "Industrie-Cinematografie für Blossomworks: die Herstellung von Spezialbauteilen, erzählt über detailreiche Nahaufnahmen und dynamische Kamerabewegungen. Ziel war, technische Präzision und handwerkliche Prozesse ästhetisch erlebbar zu machen.",
+    equipment: "Blackmagic Pocket Cinema 6K",
+    software: "Adobe Premiere Pro, After Effects",
+    youtubeId: "https://youtu.be/pC5SkPwXZzk",
+    thumb: "assets/img/blossomwork.jpg",
   },
   {
     id: "steinhof-sauna",
@@ -63,21 +63,6 @@ const PROJEKTE = [
     thumb: "assets/img/steinhof-sauna.jpg",
   },
   {
-    id: "axe-ad",
-    titel: "AXE Produkt Ad",
-    kategorie: "social",
-    jahr: 2026,
-    ort: "Stuttgart",
-    kunde: "Spec Work — eigenes Konzept",
-    rolle: "Konzept, Kamera, Schnitt",
-    beschreibung:
-      "Eigenständiges Produktvideo in moderner Werbeästhetik: Makroaufnahmen, gezieltes Licht und sanfte Kamerabewegungen, montiert mit präzisem Schnitt und hochwertigem Sounddesign — orientiert an großen Kampagnen.",
-    equipment: "iPhone 15 Pro",
-    software: "Adobe After Effects, Nano Banana Pro, Kling 3.0",
-    youtubeId: "https://youtube.com/shorts/abqrBHcak_c?feature=share",
-    thumb: "assets/img/axe-ad.jpg",
-  },
-  {
     id: "aposto-restaurant",
     titel: "Aposto Restaurant",
     kategorie: "social",
@@ -91,6 +76,21 @@ const PROJEKTE = [
     software: "Adobe Premiere Pro, After Effects",
     youtubeId: "https://youtube.com/shorts/VzReXujgjhk?feature=share",
     thumb: "assets/img/aposto-restaurant.jpg",
+  },
+  {
+    id: "axe-ad",
+    titel: "AXE Produkt Ad",
+    kategorie: "social",
+    jahr: 2026,
+    ort: "Stuttgart",
+    kunde: "Spec Work — eigenes Konzept",
+    rolle: "Konzept, Kamera, Schnitt",
+    beschreibung:
+      "Eigenständiges Produktvideo in moderner Werbeästhetik: Makroaufnahmen, gezieltes Licht und sanfte Kamerabewegungen, montiert mit präzisem Schnitt und hochwertigem Sounddesign — orientiert an großen Kampagnen.",
+    equipment: "iPhone 15 Pro",
+    software: "Adobe After Effects, Nano Banana Pro, Kling 3.0",
+    youtubeId: "https://youtube.com/shorts/abqrBHcak_c?feature=share",
+    thumb: "assets/img/axe-ad.jpg",
   },
   {
     id: "oblatio",
