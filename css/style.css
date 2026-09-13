@@ -142,7 +142,12 @@ body {
   font-size: 1.0625rem;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  /* Kein horizontales Wischen auf Mobil: clip verhindert den Überlauf
+     (z. B. der von rechts einfliegenden Prozess-Karten) zuverlässig, OHNE
+     wie overflow-x:hidden die vielen position:sticky-Elemente zu brechen.
+     hidden bleibt als Fallback für Browser ohne clip-Support. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Kein Hintergrund-Dekor: Brutal Minimalism lebt vom flachen, tiefen
@@ -1222,6 +1227,10 @@ button {
   flex-direction: column;
   gap: 1.2rem;
   padding-left: clamp(2.2rem, 5vw, 2.8rem);
+  /* Fängt den Rechts-Versatz der von rechts einfliegenden Karten
+     (transform: translateX) ab, damit er auf Mobil keinen horizontalen
+     Dokument-Überlauf erzeugt. clip statt hidden: kein Scroll-Container. */
+  overflow-x: clip;
 }
 
 .prozess-linie {
