@@ -6,7 +6,17 @@
  *            Leer lassen ("") solange kein Video verlinkt ist — die Seite zeigt dann "Video folgt".
  * thumb:     Pfad zum Vorschaubild (16:9). Aktuell die YouTube-Thumbnails (lokal gespeichert).
  *            Für eigene Filmstills: Datei in assets/img/ ersetzen oder Pfad hier anpassen.
- * kategorie: "imagefilm" | "werbefilm" | "social" | "kurzfilm"
+ * kategorie: "imagefilm" | "werbefilm" | "social" | "kurzfilm" | "ai"
+ *
+ * Optionale Felder:
+ * workflow:      Arbeitsweise/Pipeline — steht im Modal zwischen Rolle und Software.
+ * softwareLabel: Überschrift der Software-Spalte, falls "Software" nicht passt
+ *                (z. B. "Software / AI Tools"). Default: "Software".
+ * sheets:        Referenzbilder für den Block unter den Projektinfos:
+ *                { titel, bild, text, breit }.
+ *                breit: true → Bild läuft auf Desktop über die volle Breite.
+ * sheetsTitel:   Überschrift dieses Blocks, falls „Development / Reference
+ *                Sheets" nicht passt (z. B. „Storyboard / Previsualization").
  */
 
 const KATEGORIEN = {
@@ -14,6 +24,7 @@ const KATEGORIEN = {
   werbefilm: "Werbefilm",
   social: "Social Media",
   kurzfilm: "Kurzfilm",
+  ai: "Generative AI",
 };
 
 const PROJEKTE = [
@@ -122,5 +133,67 @@ const PROJEKTE = [
     software: "Adobe Premiere Pro, After Effects, Photoshop",
     youtubeId: "https://youtu.be/-7dlFblGMNU",
     thumb: "assets/img/signal.jpg",
+  },
+  {
+    id: "icebound",
+    titel: "ICEBOUND",
+    kategorie: "ai",
+    jahr: 2026,
+    ort: "Gärtringen",
+    rolle: "Konzept, AI Art Direction, Referenzgenerierung, Prompting, Animation, Editing, Sounddesign",
+    beschreibung:
+      "Ein cineastischer AI-Kurzfilm in einer extremen Eislandschaft. Um über unterschiedliche Einstellungen, Perspektiven und Sequenzen hinweg eine möglichst hohe visuelle Konsistenz zu gewährleisten, wurden für das Projekt eigene Character Sheets und Location Sheets entwickelt und als visuelle Referenzen verwendet. Das Projekt verbindet KI-generierte Bilder und Videos mit filmischer Bildgestaltung, Editing und Sounddesign und zeigt einen workfloworientierten Einsatz generativer KI innerhalb einer zusammenhängenden visuellen Erzählung.",
+    workflow: "Character Sheets, Location Sheets, Image-to-Video, Text-to-Image",
+    softwareLabel: "Software / AI Tools",
+    software: "Nano Banana Pro, Seedance 2.0, Kling 3.0, Adobe Premiere Pro, After Effects",
+    youtubeId: "https://youtu.be/t5Es5td5Ncs",
+    thumb: "assets/img/icebound.jpg",
+    sheets: [
+      {
+        titel: "Character Sheet — Bergsteiger",
+        bild: "assets/img/Character Sheet – Bergsteiger.jpeg",
+        text: "Visuelle Referenz zur konsistenten Darstellung der Hauptfigur über unterschiedliche Einstellungen und Perspektiven hinweg.",
+      },
+      {
+        titel: "Character Sheet — Cyborg",
+        bild: "assets/img/Character Sheet – Cyborg.jpeg",
+        text: "Referenz zur Wahrung einer konsistenten Formensprache, Silhouette und Materialität des Cyborgs.",
+      },
+      {
+        titel: "Location Sheet — Eislandschaft",
+        bild: "assets/img/Location Sheet – Eislandschaft.jpeg",
+        text: "Visuelle Referenz zur Definition der Umgebung und einer konsistenten Bildsprache der Eislandschaft.",
+        breit: true,
+      },
+    ],
+  },
+  {
+    id: "inside-the-mirror",
+    titel: "INSIDE THE MIRROR",
+    kategorie: "ai",
+    jahr: 2026,
+    rolle: "Konzept, Storyboarding, AI Art Direction, Prompting, Animation, Editing, Sounddesign",
+    beschreibung:
+      "Für die Entwicklung der Sequenz wurden zunächst mit GPT Image 2 vollständige Storyboard-Sheets erstellt, um Bildkomposition, Kameraperspektiven, Handlung und Timing der einzelnen Einstellungen visuell festzulegen. Die daraus entstandenen Storyboard-Frames wurden anschließend mit Seedance 2.0 animiert und zu einer zusammenhängenden filmischen Sequenz ausgearbeitet. Dieser Workflow eignet sich besonders gut, um eine Idee schnell zu visualisieren oder ein Konzept bereits vor der finalen Produktion in eine cineastische Sequenz zu übersetzen.",
+    workflow: "AI Storyboarding, Text-to-Image, Image-to-Video, Shot Planning, Editing",
+    softwareLabel: "Software / AI Tools",
+    software: "GPT Image 2, Seedance 2.0, Adobe Premiere Pro, After Effects",
+    youtubeId: "https://youtu.be/vM9FoaeVVas",
+    thumb: "assets/img/inside-the-mirror.jpg",
+    sheetsTitel: "Storyboard / Previsualization",
+    sheets: [
+      {
+        titel: "Storyboard Sheet 1 — Die Abweichung",
+        bild: "assets/img/storyboard-1.jpg",
+        text: "Erste Phase der Previsualisierung: Aufbau der Location, Einführung der Figur und schrittweise Entwicklung der ersten Abweichung zwischen Realität und Spiegelbild.",
+        breit: true,
+      },
+      {
+        titel: "Storyboard Sheet 2 — Der Spiegel",
+        bild: "assets/img/storyboard-2.jpg",
+        text: "Zweite Phase der Previsualisierung: Eskalation der Handlung und visuelle Entwicklung der surrealen Interaktion zwischen Figur und Spiegel.",
+        breit: true,
+      },
+    ],
   },
 ];

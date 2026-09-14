@@ -62,7 +62,7 @@
 
   const grid = $("#projekt-grid");
   const filterLeiste = $("#filter-leiste");
-  const KATEGORIE_REIHENFOLGE = ["imagefilm", "werbefilm", "social", "kurzfilm"];
+  const KATEGORIE_REIHENFOLGE = ["imagefilm", "werbefilm", "social", "kurzfilm", "ai"];
 
   function kartenMarkup(p, index) {
     const award = p.award
@@ -200,6 +200,7 @@
   const lbMeta = $("#lightbox-meta");
   const lbBesch = $("#lightbox-besch");
   const lbCredits = $("#lightbox-credits");
+  const lbSheets = $("#lightbox-sheets");
   const lbSchliessenBtn = $("#lightbox-schliessen");
   let zuletztFokussiert = null;
 
@@ -250,6 +251,35 @@
         allowfullscreen></iframe>`;
   });
 
+  /* Optionaler Block unter den Projektinfos: Referenzbilder aus der
+     Entwicklung (p.sheets in projects-data.js). Die Überschrift kommt aus
+     p.sheetsTitel, damit ein Projekt seinen Block auch anders nennen kann
+     (z. B. "Storyboard / Previsualization"). Ohne sheets bleibt der
+     Container leer und blendet sich per CSS (:empty) komplett aus. */
+  function sheetsRendern(p) {
+    const sheets = Array.isArray(p.sheets) ? p.sheets : [];
+    if (!sheets.length) {
+      lbSheets.innerHTML = "";
+      return;
+    }
+    lbSheets.innerHTML = `
+      <h3 class="sheets-titel mono">${esc(p.sheetsTitel || "Development / Reference Sheets")}</h3>
+      <div class="sheet-grid">
+        ${sheets
+          .map(
+            (s) => `
+          <figure class="sheet${s.breit ? " sheet--breit" : ""}">
+            <img src="${esc(s.bild)}" alt="Referenzbild: ${esc(s.titel)}" loading="lazy">
+            <figcaption>
+              <span class="sheet-label mono">${esc(s.titel)}</span>
+              <p class="sheet-text">${esc(s.text)}</p>
+            </figcaption>
+          </figure>`
+          )
+          .join("")}
+      </div>`;
+  }
+
   function lightboxOeffnen(p, opener) {
     zuletztFokussiert = opener || document.activeElement;
 
@@ -265,12 +295,14 @@
     lbBesch.textContent = p.beschreibung;
     lbCredits.innerHTML = [
       ["Rolle", p.rolle],
+      ["Workflow", p.workflow],
       ["Equipment", p.equipment],
-      ["Software", p.software],
+      [p.softwareLabel || "Software", p.software],
     ]
       .filter(([, wert]) => Boolean(wert))
-      .map(([label, wert]) => `<div><dt>${label}</dt><dd>${esc(wert)}</dd></div>`)
+      .map(([label, wert]) => `<div><dt>${esc(label)}</dt><dd>${esc(wert)}</dd></div>`)
       .join("");
+    sheetsRendern(p);
 
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";

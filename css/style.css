@@ -1018,6 +1018,62 @@ button {
   font-size: 0.95rem;
 }
 
+/* Development / Reference Sheets — optionaler Block unter den Credits für
+   Projekte mit `sheets` (siehe projects-data.js). Zweispaltig; ein Sheet mit
+   `breit: true` läuft über die volle Breite, auf Mobil stapeln alle. */
+
+.lightbox-sheets {
+  border-top: 1px solid var(--rand);
+  padding-top: 1.6rem;
+  padding-bottom: 0.5rem;
+}
+
+.lightbox-sheets:empty {
+  display: none;
+}
+
+.sheets-titel {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  color: var(--neon);
+  margin-bottom: 1.3rem;
+}
+
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.8rem 1.4rem;
+}
+
+.sheet--breit {
+  grid-column: 1 / -1;
+}
+
+.sheet img {
+  width: 100%;
+  border: 1px solid var(--rand);
+  border-radius: var(--radius-s);
+  background: #0a0a0c;
+}
+
+.sheet figcaption {
+  margin-top: 0.85rem;
+}
+
+.sheet-label {
+  display: block;
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  color: var(--leinwand);
+  margin-bottom: 0.45rem;
+}
+
+.sheet-text {
+  color: var(--nebel);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
 /* ---------- Leistungen ---------- */
 
 .leistung-grid {
@@ -1633,6 +1689,11 @@ button {
   }
 
   .leistung-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reference Sheets untereinander statt nebeneinander */
+  .sheet-grid {
     grid-template-columns: 1fr;
   }
 
