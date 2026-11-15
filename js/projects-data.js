@@ -116,6 +116,11 @@ const PROJEKTE = [
     equipment: "iPhone 15 Pro",
     software: "Adobe Premiere Pro, After Effects, Photoshop",
     award: "Nominiert — Baden-Württembergischer Publikumsfilmpreis 2025",
+    awardKurz: "★ Nominiert",
+    laurels: [
+      { bild: "assets/img/laurel-oblatio-publikumsfilmpreis.png", breite: 975, hoehe: 670 },
+      { bild: "assets/img/laurel-oblatio-filmschau.png", breite: 686, hoehe: 467 },
+    ],
     youtubeId: "https://youtu.be/way3XK4F_vM",
     thumb: "assets/img/oblatio.jpg",
   },
@@ -131,6 +136,11 @@ const PROJEKTE = [
       "Ein atmosphärischer Science-Fiction-Horror über eine rätselhafte außerirdische Botschaft. Eigens entwickeltes Sounddesign, intensive Klangflächen und gezielte Stille treffen auf düstere Farbwelten und subtile Animationen.",
     equipment: "Blackmagic Pocket Cinema 6K",
     software: "Adobe Premiere Pro, After Effects, Photoshop",
+    award: "Official Selection — 32. Filmschau Baden-Württemberg 2026",
+    awardKurz: "★ Official Selection",
+    laurels: [
+      { bild: "assets/img/laurel-signal-filmschau.png", breite: 686, hoehe: 467 },
+    ],
     youtubeId: "https://youtu.be/-7dlFblGMNU",
     thumb: "assets/img/signal.jpg",
   },

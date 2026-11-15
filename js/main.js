@@ -66,8 +66,21 @@
 
   function kartenMarkup(p, index) {
     const award = p.award
-      ? '<span class="karte-award">★ Nominiert</span>'
+      ? `<span class="karte-award">${esc(p.awardKurz || "★ Nominiert")}</span>`
       : "";
+    // Festival-Laurels unten links. Rein dekorativ: die Auszeichnung steht als
+    // Text schon im Award-Badge, darum aria-hidden statt doppelter Vorlesung.
+    // width/height müssen mit, sonst kennt der Browser das Seitenverhältnis
+    // des noch nicht geladenen Bildes nicht und die Breite kollabiert auf 0.
+    const laurels =
+      Array.isArray(p.laurels) && p.laurels.length
+        ? `<div class="karte-laurels" aria-hidden="true">${p.laurels
+            .map(
+              (l) =>
+                `<img src="${esc(l.bild)}" alt="" width="${l.breite}" height="${l.hoehe}" loading="lazy">`
+            )
+            .join("")}</div>`
+        : "";
     return `
       <article class="projekt-karte reveal" data-kategorie="${esc(p.kategorie)}">
         <div class="karte-buehne">
@@ -76,6 +89,7 @@
             <div class="karte-media">
               <img src="${esc(p.thumb)}" alt="Vorschaubild: ${esc(p.titel)}" loading="${index < 2 ? "eager" : "lazy"}" width="1600" height="900">
               ${award}
+              ${laurels}
               <span class="karte-play" aria-hidden="true">▶ Ansehen</span>
             </div>
             <div class="karte-info">
