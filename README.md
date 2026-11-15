@@ -1,6 +1,6 @@
 # Felix Remmen — Portfolio
 
-Persönliche Portfolio-Website von **Felix Remmen**, Videograf & Editor aus der Region Stuttgart. Statisch, dunkel-cinematisch, ohne Build-Schritt und ohne externe Abhängigkeiten.
+Persönliche Portfolio-Website von **Felix Remmen**, Videograf & Editor aus der Region Remscheid. Statisch, dunkel-cinematisch, ohne Build-Schritt und ohne externe Abhängigkeiten.
 
 **Live:** https://felixremmen.github.io/felixremmen-website/
 
