@@ -2,7 +2,7 @@
 
 Persönliche Portfolio-Website von **Felix Remmen**, Videograf & Editor aus der Region Stuttgart. Statisch, dunkel-cinematisch, ohne Build-Schritt und ohne externe Abhängigkeiten.
 
-**Live:** _(nach dem GitHub-Pages-Setup hier die URL eintragen)_
+**Live:** https://felixremmen.github.io/felixremmen-website/
 
 ## Aufbau
 
